@@ -1,0 +1,878 @@
+Last login: Mon Feb 19 17:45:51 on ttys000
+sanyam@Sanyams-MacBook-Pro-2 ~ % /usr/local/mysql/bin/mysql -u root -p
+
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 9
+Server version: 8.0.32 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> create database DBMS_Project;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use DBMS_Project;
+Database changed
+mysql> create table Banker(Banker_ID numeric(10) primary key,Banker_Name varchar(20),Banker_Mail varchar(50));
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create table Branch(Branch_ID numeric(10) primary key,IFS_Code varchar(11),Banker_Address varchar(50));
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create table Loan_Payment(Loan_Payment_ID numeric(10) primary key,Issued_Amt decimal(10,2),Loan_ID numeric(10));
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create table Loan(Loan_ID numeric(10) primary key,Issued_Amt decimal(10,2),Interest_Rate varchar(5),Account_No. numeric(10));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '. numeric(10))' at line 1
+mysql> create table Loan(Loan_ID numeric(10) primary key,Issued_Amt decimal(10,2),Interest_Rate varchar(5),Account_No numeric(10));
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create table Account(Account_No numeric(10) primary key,Account_Balance decimal(10,2),Account_Type varchar(20));
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> show tables
+    -> ;
++------------------------+
+| Tables_in_dbms_project |
++------------------------+
+| Account                |
+| Banker                 |
+| Branch                 |
+| Loan                   |
+| Loan_Payment           |
++------------------------+
+5 rows in set (0.00 sec)
+
+mysql> create table Transaction(Transaction_ID numeric(10) primary key,Transaction_Type varchar(20),Account_No numeric(10),Amount decimal(10,2));
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create table Card(Card_No numeric(10) primary key,Exp_Date varchar(10),Card_Type varchar(20),Account_No numeric(10));
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create table Customer(Cust_ID numeric(10) primary key,Cust_Name varchar(20),DOB varchar(10),Mobile_No numeric(10),Account_No numeric(10));
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> alter table Customer add foreign key(Account_No) references Account(Account_No);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table Card add foreign key(Account_No) references Account(Account_No);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table Transaction add foreign key(Account_No) references Account(Account_No);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table Loan add foreign key(Account_No) references Account(Account_No);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table Loan_Payment add foreign key(Loan_ID) references Loan(Loan_ID);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table Loan add unique(Issued_Amt);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table Loan_Payment add foreign key(Issued_Amt) references Loan(Issued_Amt);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table Banker add unique(Banker_Mail);
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table Card add unique(Account_No);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table Customer add unique(Mobile_No);
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> drop table Loan_Payment;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> drop table Loan;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> create table Loan_Payment(Loan_Payment_ID numeric(10) primary key,Issued_Amt decimal(10,2),Loan_ID numeric(10) unique);
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create table Loan(Loan_ID numeric(10) primary key,Issued_Amt decimal(10,2),Interest_Rate varchar(10),Account_No numeric(10));
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> alter table Loan add foreign key(Account_No) references Account(Account_No);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table Loan_Payment add foreign key(Issued_Amt) references Loan(Issued_Amt);
+ERROR 1822 (HY000): Failed to add the foreign key constraint. Missing index for constraint 'loan_payment_ibfk_1' in the referenced table 'Loan'
+mysql> alter table Loan add unique(Issued_Amt);
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table Loan_Payment add foreign key(Issued_Amt) references Loan(Issued_Amt);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> create table FD(FD_Interest_Rate varchar(10),Account_No int(10),Time_Period varchar(20));
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+mysql> alter table FD add foreign key(Account_No) references Account(Account_No);
+ERROR 3780 (HY000): Referencing column 'Account_No' and referenced column 'Account_No' in foreign key constraint 'fd_ibfk_1' are incompatible.
+mysql> drop table FD;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> create table FD(FD_Interest_Rate varchar(10),Account_No numeric(10),Time_Period varchar(20));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> alter table FD add foreign key(Account_No) references Account(Account_No);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> show tables;
++------------------------+
+| Tables_in_dbms_project |
++------------------------+
+| Account                |
+| Banker                 |
+| Branch                 |
+| Card                   |
+| Customer               |
+| FD                     |
+| Loan                   |
+| Loan_Payment           |
+| Transaction            |
++------------------------+
+9 rows in set (0.00 sec)
+
+mysql> desc Account;
++-----------------+---------------+------+-----+---------+-------+
+| Field           | Type          | Null | Key | Default | Extra |
++-----------------+---------------+------+-----+---------+-------+
+| Account_No      | decimal(10,0) | NO   | PRI | NULL    |       |
+| Account_Balance | decimal(10,2) | YES  |     | NULL    |       |
+| Account_Type    | varchar(20)   | YES  |     | NULL    |       |
++-----------------+---------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> desc Banker;
++-------------+---------------+------+-----+---------+-------+
+| Field       | Type          | Null | Key | Default | Extra |
++-------------+---------------+------+-----+---------+-------+
+| Banker_ID   | decimal(10,0) | NO   | PRI | NULL    |       |
+| Banker_Name | varchar(20)   | YES  |     | NULL    |       |
+| Banker_Mail | varchar(50)   | YES  | UNI | NULL    |       |
++-------------+---------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> desc Branch;
++----------------+---------------+------+-----+---------+-------+
+| Field          | Type          | Null | Key | Default | Extra |
++----------------+---------------+------+-----+---------+-------+
+| Branch_ID      | decimal(10,0) | NO   | PRI | NULL    |       |
+| IFS_Code       | varchar(11)   | YES  |     | NULL    |       |
+| Banker_Address | varchar(50)   | YES  |     | NULL    |       |
++----------------+---------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> desc Card;
++------------+---------------+------+-----+---------+-------+
+| Field      | Type          | Null | Key | Default | Extra |
++------------+---------------+------+-----+---------+-------+
+| Card_No    | decimal(10,0) | NO   | PRI | NULL    |       |
+| Exp_Date   | varchar(10)   | YES  |     | NULL    |       |
+| Card_Type  | varchar(20)   | YES  |     | NULL    |       |
+| Account_No | decimal(10,0) | YES  | UNI | NULL    |       |
++------------+---------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> desc Customer;
++------------+---------------+------+-----+---------+-------+
+| Field      | Type          | Null | Key | Default | Extra |
++------------+---------------+------+-----+---------+-------+
+| Cust_ID    | decimal(10,0) | NO   | PRI | NULL    |       |
+| Cust_Name  | varchar(20)   | YES  |     | NULL    |       |
+| DOB        | varchar(10)   | YES  |     | NULL    |       |
+| Mobile_No  | decimal(10,0) | YES  | UNI | NULL    |       |
+| Account_No | decimal(10,0) | YES  | MUL | NULL    |       |
++------------+---------------+------+-----+---------+-------+
+5 rows in set (0.01 sec)
+
+mysql> desc FD;
++------------------+---------------+------+-----+---------+-------+
+| Field            | Type          | Null | Key | Default | Extra |
++------------------+---------------+------+-----+---------+-------+
+| FD_Interest_Rate | varchar(10)   | YES  |     | NULL    |       |
+| Account_No       | decimal(10,0) | YES  | MUL | NULL    |       |
+| Time_Period      | varchar(20)   | YES  |     | NULL    |       |
++------------------+---------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> desc Loan;
++---------------+---------------+------+-----+---------+-------+
+| Field         | Type          | Null | Key | Default | Extra |
++---------------+---------------+------+-----+---------+-------+
+| Loan_ID       | decimal(10,0) | NO   | PRI | NULL    |       |
+| Issued_Amt    | decimal(10,2) | YES  | UNI | NULL    |       |
+| Interest_Rate | varchar(10)   | YES  |     | NULL    |       |
+| Account_No    | decimal(10,0) | YES  | MUL | NULL    |       |
++---------------+---------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+mysql> desc Loan_Payment;
++-----------------+---------------+------+-----+---------+-------+
+| Field           | Type          | Null | Key | Default | Extra |
++-----------------+---------------+------+-----+---------+-------+
+| Loan_Payment_ID | decimal(10,0) | NO   | PRI | NULL    |       |
+| Issued_Amt      | decimal(10,2) | YES  | MUL | NULL    |       |
+| Loan_ID         | decimal(10,0) | YES  | UNI | NULL    |       |
++-----------------+---------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> desc Transaction;
++------------------+---------------+------+-----+---------+-------+
+| Field            | Type          | Null | Key | Default | Extra |
++------------------+---------------+------+-----+---------+-------+
+| Transaction_ID   | decimal(10,0) | NO   | PRI | NULL    |       |
+| Transaction_Type | varchar(20)   | YES  |     | NULL    |       |
+| Account_No       | decimal(10,0) | YES  | MUL | NULL    |       |
+| Amount           | decimal(10,2) | YES  |     | NULL    |       |
++------------------+---------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> INSERT INTO ACCOUNT VALUES(435780865352,450780,"Savings"),(345427353682,764686,"Current"),(657888643543,576874,"Savings"),(62453839385,745383,"Savings"),(527734237363,263533,"Current"),
+    -> (537384095663,6384635,"Savings"),(536852354687,8535867,"Current"),(568525894855,563864,"Current"),(769469362157,9846526,"Savings"),(247378635804,674000,"Savings"),
+    -> (658411235267,95783110,"Current"),(567637963267,48642787,"Savings"),(647842326761,6544852,"Current"),(578643246744,9253737,"Current"),(573457690707,6789007,"Savings")
+    -> ;
+ERROR 1264 (22003): Out of range value for column 'Account_No' at row 1
+mysql> INSERT INTO ACCOUNT VALUES(4357805352,450780,"Savings"),(3457353682,764686,"Current"),(6578643543,576874,"Savings"),(624539385,745383,"Savings"),(5234237363,263533,"Current"),
+    -> (5373840663,6384635,"Savings"),(5368554687,8535867,"Current"),(5525894855,563864,"Current"),(7699362157,9846526,"Savings"),(2478635804,674000,"Savings"),
+    -> (6584235267,95783110,"Current"),(5676363267,48642787,"Savings"),(6478426761,6544852,"Current"),(5786436744,9253737,"Current"),(5737690707,6789007,"Savings");
+Query OK, 15 rows affected (0.01 sec)
+Records: 15  Duplicates: 0  Warnings: 0
+
+mysql> select * from Account;
++------------+-----------------+--------------+
+| Account_No | Account_Balance | Account_Type |
++------------+-----------------+--------------+
+|  624539385 |       745383.00 | Savings      |
+| 2478635804 |       674000.00 | Savings      |
+| 3457353682 |       764686.00 | Current      |
+| 4357805352 |       450780.00 | Savings      |
+| 5234237363 |       263533.00 | Current      |
+| 5368554687 |      8535867.00 | Current      |
+| 5373840663 |      6384635.00 | Savings      |
+| 5525894855 |       563864.00 | Current      |
+| 5676363267 |     48642787.00 | Savings      |
+| 5737690707 |      6789007.00 | Savings      |
+| 5786436744 |      9253737.00 | Current      |
+| 6478426761 |      6544852.00 | Current      |
+| 6578643543 |       576874.00 | Savings      |
+| 6584235267 |     95783110.00 | Current      |
+| 7699362157 |      9846526.00 | Savings      |
++------------+-----------------+--------------+
+15 rows in set (0.00 sec)
+
+mysql> update table account set Account_No=6245393852 where Account_No=624539385;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'table account set Account_No=6245393852 where Account_No=624539385' at line 1
+mysql> update account set Account_No=6245393852 where Account_No=624539385;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from Account;
++------------+-----------------+--------------+
+| Account_No | Account_Balance | Account_Type |
++------------+-----------------+--------------+
+| 2478635804 |       674000.00 | Savings      |
+| 3457353682 |       764686.00 | Current      |
+| 4357805352 |       450780.00 | Savings      |
+| 5234237363 |       263533.00 | Current      |
+| 5368554687 |      8535867.00 | Current      |
+| 5373840663 |      6384635.00 | Savings      |
+| 5525894855 |       563864.00 | Current      |
+| 5676363267 |     48642787.00 | Savings      |
+| 5737690707 |      6789007.00 | Savings      |
+| 5786436744 |      9253737.00 | Current      |
+| 6245393852 |       745383.00 | Savings      |
+| 6478426761 |      6544852.00 | Current      |
+| 6578643543 |       576874.00 | Savings      |
+| 6584235267 |     95783110.00 | Current      |
+| 7699362157 |      9846526.00 | Savings      |
++------------+-----------------+--------------+
+15 rows in set (0.00 sec)
+
+mysql> desc Transaction;
++------------------+---------------+------+-----+---------+-------+
+| Field            | Type          | Null | Key | Default | Extra |
++------------------+---------------+------+-----+---------+-------+
+| Transaction_ID   | decimal(10,0) | NO   | PRI | NULL    |       |
+| Transaction_Type | varchar(20)   | YES  |     | NULL    |       |
+| Account_No       | decimal(10,0) | YES  | MUL | NULL    |       |
+| Amount           | decimal(10,2) | YES  |     | NULL    |       |
++------------------+---------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+mysql> insert into transaction VALUES(4351247641,"Debit",435780865352,4507),(32351356,"Credit",345427353682,7646),(5765214361,"Credit",657888643543,57687),
+    -> (4543521436,"Debit",62453839385,7459),(65327135612,"Credit",527734237363,26353),(23123354,"Credit",537384095663,63846),(51234636,"Credit",536852354687,85358),
+    -> (4256341264,"Debit",568525894855,56300),(663254326,"Debit",769469362157,9846),(4545343222,"Debit",247378635804,67000),(531254323,"Debit",658411235267,95780),
+    -> (126342134,"Credit",567637963267,200000),(654345678,"Debit",647842326761,65448),(234126354,"Debit",578643246744,9253),(361253125,"Credit",573457690707,67890)
+    -> ;
+ERROR 1264 (22003): Out of range value for column 'Account_No' at row 1
+mysql> insert into transaction VALUES(4351247641,"Debit",4357805352,4507),(32351356,"Credit",3457353682,7646),(5765214361,"Credit",6578643543,57687),
+    -> (4543521436,"Debit",6245393852,7459),(65327135612,"Credit",5234237363,26353),(23123354,"Credit",5373840663,63846),(51234636,"Credit",5368554687,85358),
+    -> (4256341264,"Debit",5525894855,56300),(663254326,"Debit",7699362157,9846),(4545343222,"Debit",2478635804,67000),(531254323,"Debit",6584235267,95780),
+    -> (126342134,"Credit",5676363267,200000),(654345678,"Debit",6478426761,65448),(234126354,"Debit",5786436744,9253),(361253125,"Credit",5737690707,67890);
+ERROR 1264 (22003): Out of range value for column 'Transaction_ID' at row 5
+mysql> ALTER TABLE Transaction MODIFY COLUMN Transaction_ID numeric(15);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> insert into transaction VALUES(4351247641,"Debit",4357805352,4507),(32351356,"Credit",3457353682,7646),(5765214361,"Credit",6578643543,57687), (4543521436,"Debit",6245393852,7459),(65327135612,"Credit",5234237363,26353),(23123354,"Credit",5373840663,63846),(51234636,"Credit",5368554687,85358), (4256341264,"Debit",5525894855,56300),(663254326,"Debit",7699362157,9846),(4545343222,"Debit",2478635804,67000),(531254323,"Debit",6584235267,95780), (126342134,"Credit",5676363267,200000),(654345678,"Debit",6478426761,65448),(234126354,"Debit",5786436744,9253),(361253125,"Credit",5737690707,67890);
+Query OK, 15 rows affected (0.01 sec)
+Records: 15  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM Transaction;
++----------------+------------------+------------+-----------+
+| Transaction_ID | Transaction_Type | Account_No | Amount    |
++----------------+------------------+------------+-----------+
+|       23123354 | Credit           | 5373840663 |  63846.00 |
+|       32351356 | Credit           | 3457353682 |   7646.00 |
+|       51234636 | Credit           | 5368554687 |  85358.00 |
+|      126342134 | Credit           | 5676363267 | 200000.00 |
+|      234126354 | Debit            | 5786436744 |   9253.00 |
+|      361253125 | Credit           | 5737690707 |  67890.00 |
+|      531254323 | Debit            | 6584235267 |  95780.00 |
+|      654345678 | Debit            | 6478426761 |  65448.00 |
+|      663254326 | Debit            | 7699362157 |   9846.00 |
+|     4256341264 | Debit            | 5525894855 |  56300.00 |
+|     4351247641 | Debit            | 4357805352 |   4507.00 |
+|     4543521436 | Debit            | 6245393852 |   7459.00 |
+|     4545343222 | Debit            | 2478635804 |  67000.00 |
+|     5765214361 | Credit           | 6578643543 |  57687.00 |
+|    65327135612 | Credit           | 5234237363 |  26353.00 |
++----------------+------------------+------------+-----------+
+15 rows in set (0.00 sec)
+
+mysql> desc Card;
++------------+---------------+------+-----+---------+-------+
+| Field      | Type          | Null | Key | Default | Extra |
++------------+---------------+------+-----+---------+-------+
+| Card_No    | decimal(10,0) | NO   | PRI | NULL    |       |
+| Exp_Date   | varchar(10)   | YES  |     | NULL    |       |
+| Card_Type  | varchar(20)   | YES  |     | NULL    |       |
+| Account_No | decimal(10,0) | YES  | UNI | NULL    |       |
++------------+---------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+mysql> ALTER TABLE Card MODIFY COLUMN Card_No numeric(15);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> insert into card VALUES(4351247641,"02/2027","Visa",4357805352),(32351356,"07/2031","Mastercard",3457353682),(5765214361,"09/2028","Visa",6578643543),
+    -> (4543521436,"11/2029","Visa",6245393852),(65327135612,"12/2032","Visa",5234237363),(23123354,"04/2027","Mastercard",5373840663),
+    -> (51234636,"06/2028","Mastercard",5368554687),(4256341264,"08/2025","Visa",5525894855),(663254326,"11/2027","Mastercard",7699362157),
+    -> (4545343222,"12/2029","Visa",2478635804),(531254323,"01/2027","Mastercard",6584235267),(126342134,"02/2025","Visa",5676363267),(654345678,"03/2035","Visa",6478426761),
+    -> (234126354,"03/2034","Mastercard",5786436744),(361253125,"05/2030","Mastercard",5737690707);
+Query OK, 15 rows affected (0.00 sec)
+Records: 15  Duplicates: 0  Warnings: 0
+
+mysql> select * from card;
++-------------+----------+------------+------------+
+| Card_No     | Exp_Date | Card_Type  | Account_No |
++-------------+----------+------------+------------+
+|    23123354 | 04/2027  | Mastercard | 5373840663 |
+|    32351356 | 07/2031  | Mastercard | 3457353682 |
+|    51234636 | 06/2028  | Mastercard | 5368554687 |
+|   126342134 | 02/2025  | Visa       | 5676363267 |
+|   234126354 | 03/2034  | Mastercard | 5786436744 |
+|   361253125 | 05/2030  | Mastercard | 5737690707 |
+|   531254323 | 01/2027  | Mastercard | 6584235267 |
+|   654345678 | 03/2035  | Visa       | 6478426761 |
+|   663254326 | 11/2027  | Mastercard | 7699362157 |
+|  4256341264 | 08/2025  | Visa       | 5525894855 |
+|  4351247641 | 02/2027  | Visa       | 4357805352 |
+|  4543521436 | 11/2029  | Visa       | 6245393852 |
+|  4545343222 | 12/2029  | Visa       | 2478635804 |
+|  5765214361 | 09/2028  | Visa       | 6578643543 |
+| 65327135612 | 12/2032  | Visa       | 5234237363 |
++-------------+----------+------------+------------+
+15 rows in set (0.01 sec)
+
+mysql> desc Customer;
++------------+---------------+------+-----+---------+-------+
+| Field      | Type          | Null | Key | Default | Extra |
++------------+---------------+------+-----+---------+-------+
+| Cust_ID    | decimal(10,0) | NO   | PRI | NULL    |       |
+| Cust_Name  | varchar(20)   | YES  |     | NULL    |       |
+| DOB        | varchar(10)   | YES  |     | NULL    |       |
+| Mobile_No  | decimal(10,0) | YES  | UNI | NULL    |       |
+| Account_No | decimal(10,0) | YES  | MUL | NULL    |       |
++------------+---------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> ALTER TABLE Customer MODIFY COLUMN DOB date;
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc Customer;
++------------+---------------+------+-----+---------+-------+
+| Field      | Type          | Null | Key | Default | Extra |
++------------+---------------+------+-----+---------+-------+
+| Cust_ID    | decimal(10,0) | NO   | PRI | NULL    |       |
+| Cust_Name  | varchar(20)   | YES  |     | NULL    |       |
+| DOB        | date          | YES  |     | NULL    |       |
+| Mobile_No  | decimal(10,0) | YES  | UNI | NULL    |       |
+| Account_No | decimal(10,0) | YES  | MUL | NULL    |       |
++------------+---------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> ALTER TABLE Customer MODIFY COLUMN Cust_ID numeric(15);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc Customer;
++------------+---------------+------+-----+---------+-------+
+| Field      | Type          | Null | Key | Default | Extra |
++------------+---------------+------+-----+---------+-------+
+| Cust_ID    | decimal(15,0) | NO   | PRI | NULL    |       |
+| Cust_Name  | varchar(20)   | YES  |     | NULL    |       |
+| DOB        | date          | YES  |     | NULL    |       |
+| Mobile_No  | decimal(10,0) | YES  | UNI | NULL    |       |
+| Account_No | decimal(10,0) | YES  | MUL | NULL    |       |
++------------+---------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> select * from transaction;
++----------------+------------------+------------+-----------+
+| Transaction_ID | Transaction_Type | Account_No | Amount    |
++----------------+------------------+------------+-----------+
+|       23123354 | Credit           | 5373840663 |  63846.00 |
+|       32351356 | Credit           | 3457353682 |   7646.00 |
+|       51234636 | Credit           | 5368554687 |  85358.00 |
+|      126342134 | Credit           | 5676363267 | 200000.00 |
+|      234126354 | Debit            | 5786436744 |   9253.00 |
+|      361253125 | Credit           | 5737690707 |  67890.00 |
+|      531254323 | Debit            | 6584235267 |  95780.00 |
+|      654345678 | Debit            | 6478426761 |  65448.00 |
+|      663254326 | Debit            | 7699362157 |   9846.00 |
+|     4256341264 | Debit            | 5525894855 |  56300.00 |
+|     4351247641 | Debit            | 4357805352 |   4507.00 |
+|     4543521436 | Debit            | 6245393852 |   7459.00 |
+|     4545343222 | Debit            | 2478635804 |  67000.00 |
+|     5765214361 | Credit           | 6578643543 |  57687.00 |
+|    65327135612 | Credit           | 5234237363 |  26353.00 |
++----------------+------------------+------------+-----------+
+15 rows in set (0.00 sec)
+
+mysql> insert into customer VALUES(4351247641,"Aditya",2000-02-12,7698453789,4357805352),(32351356,"Rahul",1989-07-04,9846421531,3457353682),
+    -> (5765214361,"Suryansh",2003-11-09,8790090866,6578643543),(4543521436,"Yogesh",1990-02-11,6758453211,6245393852),
+    -> (65327135612,"Sanyam",2004-01-05,7634327890,5234237363),(23123354,"Harshit",1980-04-12,7645324542,5373840663), 
+    -> (51234636,"Prerit",1988-06-04,7771997766,5368554687),(4256341264,"Ritvik",2001-08-18,7623412340,5525894855),(663254326,"Kinjal",1978-03-17,9873356470,7699362157),
+    -> (4545343222,"Manjari",1977-02-11,8796424675,2478635804),(531254323,"Harsh",1996-01-19,777765358,6584235267),
+    -> (126342134,"Abhimanyu",1999-12-19,775267352320,5676363267),(654345678,"Santosh",1995-03-09,6742469964,6478426761),
+    -> (234126354,"Sambhav",2000-07-06,6325327646,5786436744),(361253125,"Ayan",1996-05-08,632423453562,5737690707);
+ERROR 1292 (22007): Incorrect date value: '1986' for column 'DOB' at row 1
+mysql> insert into customer VALUES(4351247641,"Aditya",2000-02-12,7698453789,4357805352),(32351356,"Rahul",1989-07-04,9846421531,3457353682),
+    -> (5765214361,"Suryansh",2003-11-09,8790090866,6578643543),(4543521436,"Yogesh",1990-02-11,6758453211,6245393852),
+    -> (65327135612,"Sanyam",2004-01-05,7634327890,5234237363),(23123354,"Harshit",1980-04-12,7645324542,5373840663), 
+    -> (51234636,"Prerit",1988-06-04,7771997766,5368554687),(4256341264,"Ritvik",2001-08-18,7623412340,5525894855),(663254326,"Kinjal",1978-03-17,9873356470,7699362157),
+    -> (4545343222,"Manjari",1977-02-11,8796424675,2478635804),(531254323,"Harsh",1996-01-19,777765358,6584235267),
+    -> (126342134,"Abhimanyu",1999-12-19,775267352320,5676363267),(654345678,"Santosh",1995-03-09,6742469964,6478426761),
+    -> (234126354,"Sambhav",2000-07-06,6325327646,5786436744),(361253125,"Ayan",1996-05-08,632423453562,5737690707);
+ERROR 1292 (22007): Incorrect date value: '1986' for column 'DOB' at row 1
+mysql> insert into customer VALUES(4351247641,"Aditya",'2000-02-12',7698453789,4357805352),(32351356,"Rahul",'1989-07-04',9846421531,3457353682),
+    -> (5765214361,"Suryansh",'2003-11-09',8790090866,6578643543),(4543521436,"Yogesh",'1990-02-11',6758453211,6245393852),
+    -> (65327135612,"Sanyam",'2004-01-05',7634327890,5234237363),(23123354,"Harshit",'1980-04-12',7645324542,5373840663),
+    -> (51234636,"Prerit",'1988-06-04',7771997766,5368554687),(4256341264,"Ritvik",'2001-08-18',7623412340,5525894855),(663254326,"Kinjal",'1978-03-17',9873356470,7699362157),
+    -> (4545343222,"Manjari",'1977-02-11',8796424675,2478635804),(531254323,"Harsh",'1996-01-19',777765358,6584235267),
+    -> (126342134,"Abhimanyu",'1999-12-19',775267352320,5676363267),(654345678,"Santosh",'1995-03-09',6742469964,6478426761),
+    -> (234126354,"Sambhav",'2000-07-06',6325327646,5786436744),(361253125,"Ayan",'1996-05-08',632423453562,5737690707);
+ERROR 1264 (22003): Out of range value for column 'Mobile_No' at row 12
+mysql> insert into customer VALUES(4351247641,"Aditya",'2000-02-12',7698453789,4357805352),(32351356,"Rahul",'1989-07-04',9846421531,3457353682),
+    -> (5765214361,"Suryansh",'2003-11-09',8790090866,6578643543),(4543521436,"Yogesh",'1990-02-11',6758453211,6245393852),
+    -> (65327135612,"Sanyam",'2004-01-05',7634327890,5234237363),(23123354,"Harshit",'1980-04-12',7645324542,5373840663),
+    -> (51234636,"Prerit",'1988-06-04',7771997766,5368554687),(4256341264,"Ritvik",'2001-08-18',7623412340,5525894855),(663254326,"Kinjal",'1978-03-17',9873356470,7699362157),
+    -> (4545343222,"Manjari",'1977-02-11',8796424675,2478635804),(531254323,"Harsh",'1996-01-19',777765358,6584235267),
+    -> (126342134,"Abhimanyu",'1999-12-19',7752673520,5676363267),(654345678,"Santosh",'1995-03-09',6742469964,6478426761),
+    -> (234126354,"Sambhav",'2000-07-06',6325327646,5786436744),(361253125,"Ayan",'1996-05-08',2423453562,5737690707);
+Query OK, 15 rows affected (0.00 sec)
+Records: 15  Duplicates: 0  Warnings: 0
+
+mysql> select * from customer;
++-------------+-----------+------------+------------+------------+
+| Cust_ID     | Cust_Name | DOB        | Mobile_No  | Account_No |
++-------------+-----------+------------+------------+------------+
+|    23123354 | Harshit   | 1980-04-12 | 7645324542 | 5373840663 |
+|    32351356 | Rahul     | 1989-07-04 | 9846421531 | 3457353682 |
+|    51234636 | Prerit    | 1988-06-04 | 7771997766 | 5368554687 |
+|   126342134 | Abhimanyu | 1999-12-19 | 7752673520 | 5676363267 |
+|   234126354 | Sambhav   | 2000-07-06 | 6325327646 | 5786436744 |
+|   361253125 | Ayan      | 1996-05-08 | 2423453562 | 5737690707 |
+|   531254323 | Harsh     | 1996-01-19 |  777765358 | 6584235267 |
+|   654345678 | Santosh   | 1995-03-09 | 6742469964 | 6478426761 |
+|   663254326 | Kinjal    | 1978-03-17 | 9873356470 | 7699362157 |
+|  4256341264 | Ritvik    | 2001-08-18 | 7623412340 | 5525894855 |
+|  4351247641 | Aditya    | 2000-02-12 | 7698453789 | 4357805352 |
+|  4543521436 | Yogesh    | 1990-02-11 | 6758453211 | 6245393852 |
+|  4545343222 | Manjari   | 1977-02-11 | 8796424675 | 2478635804 |
+|  5765214361 | Suryansh  | 2003-11-09 | 8790090866 | 6578643543 |
+| 65327135612 | Sanyam    | 2004-01-05 | 7634327890 | 5234237363 |
++-------------+-----------+------------+------------+------------+
+15 rows in set (0.00 sec)
+
+mysql> select * from Accoun;
+ERROR 1146 (42S02): Table 'dbms_project.accoun' doesn't exist
+mysql> update customer set Mobile_No=9617765358 where Mobile_No=777765358;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from customer;
++-------------+-----------+------------+------------+------------+
+| Cust_ID     | Cust_Name | DOB        | Mobile_No  | Account_No |
++-------------+-----------+------------+------------+------------+
+|    23123354 | Harshit   | 1980-04-12 | 7645324542 | 5373840663 |
+|    32351356 | Rahul     | 1989-07-04 | 9846421531 | 3457353682 |
+|    51234636 | Prerit    | 1988-06-04 | 7771997766 | 5368554687 |
+|   126342134 | Abhimanyu | 1999-12-19 | 7752673520 | 5676363267 |
+|   234126354 | Sambhav   | 2000-07-06 | 6325327646 | 5786436744 |
+|   361253125 | Ayan      | 1996-05-08 | 2423453562 | 5737690707 |
+|   531254323 | Harsh     | 1996-01-19 | 9617765358 | 6584235267 |
+|   654345678 | Santosh   | 1995-03-09 | 6742469964 | 6478426761 |
+|   663254326 | Kinjal    | 1978-03-17 | 9873356470 | 7699362157 |
+|  4256341264 | Ritvik    | 2001-08-18 | 7623412340 | 5525894855 |
+|  4351247641 | Aditya    | 2000-02-12 | 7698453789 | 4357805352 |
+|  4543521436 | Yogesh    | 1990-02-11 | 6758453211 | 6245393852 |
+|  4545343222 | Manjari   | 1977-02-11 | 8796424675 | 2478635804 |
+|  5765214361 | Suryansh  | 2003-11-09 | 8790090866 | 6578643543 |
+| 65327135612 | Sanyam    | 2004-01-05 | 7634327890 | 5234237363 |
++-------------+-----------+------------+------------+------------+
+15 rows in set (0.00 sec)
+
+mysql> desc banker;
++-------------+---------------+------+-----+---------+-------+
+| Field       | Type          | Null | Key | Default | Extra |
++-------------+---------------+------+-----+---------+-------+
+| Banker_ID   | decimal(10,0) | NO   | PRI | NULL    |       |
+| Banker_Name | varchar(20)   | YES  |     | NULL    |       |
+| Banker_Mail | varchar(50)   | YES  | UNI | NULL    |       |
++-------------+---------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> desc branch;
++----------------+---------------+------+-----+---------+-------+
+| Field          | Type          | Null | Key | Default | Extra |
++----------------+---------------+------+-----+---------+-------+
+| Branch_ID      | decimal(10,0) | NO   | PRI | NULL    |       |
+| IFS_Code       | varchar(11)   | YES  |     | NULL    |       |
+| Banker_Address | varchar(50)   | YES  |     | NULL    |       |
++----------------+---------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> desc loan_payment;
++-----------------+---------------+------+-----+---------+-------+
+| Field           | Type          | Null | Key | Default | Extra |
++-----------------+---------------+------+-----+---------+-------+
+| Loan_Payment_ID | decimal(10,0) | NO   | PRI | NULL    |       |
+| Issued_Amt      | decimal(10,2) | YES  | MUL | NULL    |       |
+| Loan_ID         | decimal(10,0) | YES  | UNI | NULL    |       |
++-----------------+---------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> insert into Loan_Payment values(311,1223,401),(312,1244,402),(313,9866,403),(314,8494,404),(315,0484,405),(316,4748,406),(317,4649,407),(318,63737,408),(319,3455,409),(320,23434,410),(321,7382,411),(322,84783,412),(323,6722,413),(324,7229,414),(325,8272,415);
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`dbms_project`.`loan_payment`, CONSTRAINT `loan_payment_ibfk_1` FOREIGN KEY (`Issued_Amt`) REFERENCES `loan` (`Issued_Amt`))
+mysql> desc FD;
++------------------+---------------+------+-----+---------+-------+
+| Field            | Type          | Null | Key | Default | Extra |
++------------------+---------------+------+-----+---------+-------+
+| FD_Interest_Rate | varchar(10)   | YES  |     | NULL    |       |
+| Account_No       | decimal(10,0) | YES  | MUL | NULL    |       |
+| Time_Period      | varchar(20)   | YES  |     | NULL    |       |
++------------------+---------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> select * from Account;
++------------+-----------------+--------------+
+| Account_No | Account_Balance | Account_Type |
++------------+-----------------+--------------+
+| 2478635804 |       674000.00 | Savings      |
+| 3457353682 |       764686.00 | Current      |
+| 4357805352 |       450780.00 | Savings      |
+| 5234237363 |       263533.00 | Current      |
+| 5368554687 |      8535867.00 | Current      |
+| 5373840663 |      6384635.00 | Savings      |
+| 5525894855 |       563864.00 | Current      |
+| 5676363267 |     48642787.00 | Savings      |
+| 5737690707 |      6789007.00 | Savings      |
+| 5786436744 |      9253737.00 | Current      |
+| 6245393852 |       745383.00 | Savings      |
+| 6478426761 |      6544852.00 | Current      |
+| 6578643543 |       576874.00 | Savings      |
+| 6584235267 |     95783110.00 | Current      |
+| 7699362157 |      9846526.00 | Savings      |
++------------+-----------------+--------------+
+15 rows in set (0.00 sec)
+
+mysql> insert into FD values("7.2%",2478635804,"12 Months");
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into FD values("6.0%",3457353682,"6 Months"),("7.4%",4357805352,"24 Months"),("7.0%",5234237363,"10 Months"),("7.4%",5368554687,"24 Months"),("6.4%",5373840663,"8 Months"),("7.2%",5525894855,"12 Months"),("6.0%",5676363267,"12 Months"),("7.4%",5737690707,"24 Months"),("7.0%",5786436744,"10 Months"),("6.4%",6245393852,"8 Months"),("7.2%",6478426761,"12 Months"),("7.4%",6578643543,"24 Months"),("6.0%",6584235267,"6 Months"),("7.2%",7699362157,"12 Months");
+Query OK, 14 rows affected (0.01 sec)
+Records: 14  Duplicates: 0  Warnings: 0
+
+mysql> select * from FD;
++------------------+------------+-------------+
+| FD_Interest_Rate | Account_No | Time_Period |
++------------------+------------+-------------+
+| 7.2%             | 2478635804 | 12 Months   |
+| 6.0%             | 3457353682 | 6 Months    |
+| 7.4%             | 4357805352 | 24 Months   |
+| 7.0%             | 5234237363 | 10 Months   |
+| 7.4%             | 5368554687 | 24 Months   |
+| 6.4%             | 5373840663 | 8 Months    |
+| 7.2%             | 5525894855 | 12 Months   |
+| 6.0%             | 5676363267 | 12 Months   |
+| 7.4%             | 5737690707 | 24 Months   |
+| 7.0%             | 5786436744 | 10 Months   |
+| 6.4%             | 6245393852 | 8 Months    |
+| 7.2%             | 6478426761 | 12 Months   |
+| 7.4%             | 6578643543 | 24 Months   |
+| 6.0%             | 6584235267 | 6 Months    |
+| 7.2%             | 7699362157 | 12 Months   |
++------------------+------------+-------------+
+15 rows in set (0.00 sec)
+
+mysql> Insert into BANKER values(101,”Sanyam”,”sanyam@gmail.com”), (102,”Harshit”,”harshit@gmail.com”),
+    -> (103,”Yog”,”yog@gmail.com”),
+    -> (104,”Samkit”,”samkit@gmail.com”),
+    -> (105,”Kinjal”,”kinjal@gmail.com”),
+    -> (106,”Manjari”,”manjari@gmail.com”),
+    -> (107,”Ishan”,”ishan@gmail.com”),
+    -> (108,”Priyanshu”,”priyanshu@gmail.com”),
+    -> (109,”Akshat”,”akshat@gmail.com”),
+    -> (110,”Vansh”,”vansh2gmail.com”),
+    -> (111,”Kitik”,”kitik@gmail.com”);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '@gmail.com”), (102,”Harshit”,”harshit@gmail.com”),
+(103,”Yog”,”y' at line 1
+mysql> Insert into BANKER values(101,”Sanyam”,”sanyam@gmail.com”), (102,”Harshit”,”harshit@gmail.com”);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '@gmail.com”), (102,”Harshit”,”harshit@gmail.com”)' at line 1
+mysql> Insert into BANKER values(101,"Sanyam","sanyam@gmail.com");
+Query OK, 1 row affected (0.04 sec)
+
+mysql> desc loan
+    -> ;
++---------------+---------------+------+-----+---------+-------+
+| Field         | Type          | Null | Key | Default | Extra |
++---------------+---------------+------+-----+---------+-------+
+| Loan_ID       | decimal(10,0) | NO   | PRI | NULL    |       |
+| Issued_Amt    | decimal(10,2) | YES  | UNI | NULL    |       |
+| Interest_Rate | varchar(10)   | YES  |     | NULL    |       |
+| Account_No    | decimal(10,0) | YES  | MUL | NULL    |       |
++---------------+---------------+------+-----+---------+-------+
+4 rows in set (0.05 sec)
+
+mysql> desc loan_payment;
++-----------------+---------------+------+-----+---------+-------+
+| Field           | Type          | Null | Key | Default | Extra |
++-----------------+---------------+------+-----+---------+-------+
+| Loan_Payment_ID | decimal(10,0) | NO   | PRI | NULL    |       |
+| Issued_Amt      | decimal(10,2) | YES  | MUL | NULL    |       |
+| Loan_ID         | decimal(10,0) | YES  | UNI | NULL    |       |
++-----------------+---------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> 
+mysql> Insert into BANKER values (102,"Harshit","harshit@gmail.com"),
+    -> (103,"Yog","yog@gmail.com"),
+    -> (104,"Samkit","samkit@gmail.com"),
+    -> (105,"Kinjal","kinjal@gmail.com"),
+    -> (106,"Manjari","manjari@gmail.com"),
+    -> (107,"Ishan","ishan@gmail.com"),
+    -> (108,"Priyanshu","priyanshu@gmail.com"),
+    -> (109,"Akshat","akshat@gmail.com"),
+    -> (110,"Vansh","vansh2gmail.com"),
+    -> (111,"Kitik","kitik@gmail.com");
+Query OK, 10 rows affected (0.00 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> Insert into BANKER values 
+    -> (112,"Chayan","chayan@gmail.com"),
+    -> (113,"Naman","naman@gmail.com"),
+    -> (114,"Dhruv","dhruv@gmail.com"),
+    -> (115,"Veer","veer@gmail.com");
+Query OK, 4 rows affected (0.00 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> select * from banker;
++-----------+-------------+---------------------+
+| Banker_ID | Banker_Name | Banker_Mail         |
++-----------+-------------+---------------------+
+|       101 | Sanyam      | sanyam@gmail.com    |
+|       102 | Harshit     | harshit@gmail.com   |
+|       103 | Yog         | yog@gmail.com       |
+|       104 | Samkit      | samkit@gmail.com    |
+|       105 | Kinjal      | kinjal@gmail.com    |
+|       106 | Manjari     | manjari@gmail.com   |
+|       107 | Ishan       | ishan@gmail.com     |
+|       108 | Priyanshu   | priyanshu@gmail.com |
+|       109 | Akshat      | akshat@gmail.com    |
+|       110 | Vansh       | vansh2gmail.com     |
+|       111 | Kitik       | kitik@gmail.com     |
+|       112 | Chayan      | chayan@gmail.com    |
+|       113 | Naman       | naman@gmail.com     |
+|       114 | Dhruv       | dhruv@gmail.com     |
+|       115 | Veer        | veer@gmail.com      |
++-----------+-------------+---------------------+
+15 rows in set (0.00 sec)
+
+mysql> desc branch;
++----------------+---------------+------+-----+---------+-------+
+| Field          | Type          | Null | Key | Default | Extra |
++----------------+---------------+------+-----+---------+-------+
+| Branch_ID      | decimal(10,0) | NO   | PRI | NULL    |       |
+| IFS_Code       | varchar(11)   | YES  |     | NULL    |       |
+| Banker_Address | varchar(50)   | YES  |     | NULL    |       |
++----------------+---------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> insert into Branch values(011,"AB1","Udaipur"),
+    -> (021,"AC2","Jodhpur"),
+    -> (031,"AE3","Kota"),
+    -> (041,"AR4","Ahmedabad"),
+    -> (051,"AT5","Kanpur"),
+    -> (061,"BQ1","Mumbai"),
+    -> (071,"BU2","Vadodra"),
+    -> (081,"BI30",Jabalpur"),
+    "> (091,"BP4","Nagpur"),
+    "> (010,"BN5","Indore"),
+    "> (012,"CW1","Kasol"),
+    "> (022,"CJ2","Manali"),
+    "> (032,"CL3","Shimla"),
+    "> (042,"CV4","Nashik"),
+    "> (052,"CF5","Pune");
+    "> ;
+    "> 
+    "> 
+    "> .
+    "> ;
+    "> ;
+    "> \c
+    "> \c;
+    "> \q
+    "> \q;
+    "> desc branch;
+    "> 
+    "> 
+    "> 
+    "> 
+    "> 
+    "> 
+    "> /q;
+    "> ^C
+mysql> desc branch;
++----------------+---------------+------+-----+---------+-------+
+| Field          | Type          | Null | Key | Default | Extra |
++----------------+---------------+------+-----+---------+-------+
+| Branch_ID      | decimal(10,0) | NO   | PRI | NULL    |       |
+| IFS_Code       | varchar(11)   | YES  |     | NULL    |       |
+| Banker_Address | varchar(50)   | YES  |     | NULL    |       |
++----------------+---------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> insert into Branch values(011,"AB1","Udaipur"),
+    -> (021,"AC2","Jodhpur"),
+    -> (031,"AE3","Kota"),
+    -> (041,"AR4","Ahmedabad"),
+    -> (051,"AT5","Kanpur"),
+    -> (061,"BQ1","Mumbai"),
+    -> (071,"BU2","Vadodra"),
+    -> (081,"BI30",Jabalpur"),
+    "> (091,"BP4","Nagpur"),
+    "> (010,"BN5","Indore"),
+    "> (012,"CW1","Kasol"),
+    "> (022,"CJ2","Manali"),
+    "> (032,"CL3","Shimla"),
+    "> (042,"CV4","Nashik"),
+    "> (052,"CF5","Pune");
+    "> ^C
+mysql> insert into Branch values(011,"AB1","Udaipur"),
+    -> (021,"AC2","Jodhpur"),
+    -> (031,"AE3","Kota"),
+    -> (041,"AR4","Ahmedabad"),
+    -> (051,"AT5","Kanpur"),
+    -> (061,"BQ1","Mumbai"),
+    -> (071,"BU2","Vadodra"),
+    -> (081,"BI30",Jabalpur");
+    "> ^C
+mysql> insert into Branch values(011,"AB1","Udaipur");
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into Branch values
+    -> (021,"AC2","Jodhpur"),
+    -> (031,"AE3","Kota"),
+    -> (041,"AR4","Ahmedabad"),
+    -> (051,"AT5","Kanpur");
+Query OK, 4 rows affected (0.00 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> insert into Branch values
+    -> (061,"BQ1","Mumbai"),
+    -> (071,"BU2","Vadodra");
+Query OK, 2 rows affected (0.00 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> insert into Branch values
+    -> (081,"BI30","Jabalpur"),
+    -> (091,"BP4","Nagpur"),
+    -> (010,"BN5","Indore"),
+    -> (012,"CW1","Kasol"),
+    -> (022,"CJ2","Manali"),
+    -> (032,"CL3","Shimla"),
+    -> (042,"CV4","Nashik"),
+    -> (052,"CF5","Pune");
+Query OK, 8 rows affected (0.00 sec)
+Records: 8  Duplicates: 0  Warnings: 0
+
+mysql> select * from branch
+    -> ;
++-----------+----------+----------------+
+| Branch_ID | IFS_Code | Banker_Address |
++-----------+----------+----------------+
+|        10 | BN5      | Indore         |
+|        11 | AB1      | Udaipur        |
+|        12 | CW1      | Kasol          |
+|        21 | AC2      | Jodhpur        |
+|        22 | CJ2      | Manali         |
+|        31 | AE3      | Kota           |
+|        32 | CL3      | Shimla         |
+|        41 | AR4      | Ahmedabad      |
+|        42 | CV4      | Nashik         |
+|        51 | AT5      | Kanpur         |
+|        52 | CF5      | Pune           |
+|        61 | BQ1      | Mumbai         |
+|        71 | BU2      | Vadodra        |
+|        81 | BI30     | Jabalpur       |
+|        91 | BP4      | Nagpur         |
++-----------+----------+----------------+
+15 rows in set (0.00 sec)
+
+mysql> select count(*) from branch;
++----------+
+| count(*) |
++----------+
+|       15 |
++----------+
+1 row in set (0.01 sec)
+
+mysql> Insert into Loan_Payment values (311,1223,401);
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`dbms_project`.`loan_payment`, CONSTRAINT `loan_payment_ibfk_1` FOREIGN KEY (`Issued_Amt`) REFERENCES `loan` (`Issued_Amt`))
+mysql> 

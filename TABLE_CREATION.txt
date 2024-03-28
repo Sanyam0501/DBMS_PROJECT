@@ -1,0 +1,486 @@
+mysql> use project;
+Database changed
+
+mysql> create table Banker(Banker_ID numeric(10) primary key,Banker_Name varchar(20),Banker_Mail varchar(50));
+Query OK, 0 rows affected, 1 warning (0.02 sec)
+
+mysql> desc Banker;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| Banker_ID   | int         | NO   | PRI | NULL    |       |
+| Banker_Name | varchar(20) | YES  |     | NULL    |       |
+| Banker_Mail | varchar(50) | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+3 rows in set (0.02 sec)
+
+
+mysql> create table Branch(Branch_ID numeric(10) primary key,IFS_Code varchar(11),Banker_Address varchar(50));
+Query OK, 0 rows affected, 1 warning (0.02 sec)
+
+mysql> create table Loan_Payment(Loan_Payment_ID numeric(10) primary key,Issued_Amt decimal(10,2),Loan_ID numeric(10));
+Query OK, 0 rows affected, 2 warnings (0.01 sec)
+
+
+mysql> create table Loan(Loan_ID numeric(10) primary key,Issued_Amt decimal(10,2),Interest_Rate varchar(5),Account_No numeric(10));
+Query OK, 0 rows affected, 2 warnings (0.01 sec)
+
+mysql> create table Account(Account_No numeric(10) primary key,Account_Balance decimal(10,2),Account_Type varchar(20));
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+mysql> show tables;
++-------------------+
+| Tables_in_project |
++-------------------+
+| Account           |
+| Banker            |
+| Branch            |
+| Loan              |
+| Loan_Payment      |
++-------------------+
+5 rows in set (0.00 sec)
+
+mysql> create table Transaction(Transaction_ID numeric(10) primary key,Transaction_Type varchar(20),Account_No numeric(10),Amount decimal(10,2));
+Query OK, 0 rows affected, 2 warnings (0.01 sec)
+
+mysql> create table Card(Card_No numeric(10) primary key,Exp_Date varchar(10),Card_Type varchar(20),Account_No numeric(10));
+Query OK, 0 rows affected, 2 warnings (0.01 sec)
+
+mysql> create table Customer(Cust_ID numeric(10) primary key,Cust_Name varchar(20),DOB varchar(10),Mobile_No numeric(10),Account_No numeric(10));
+Query OK, 0 rows affected, 3 warnings (0.01 sec)
+
+mysql> show tables;
++-------------------+
+| Tables_in_project |
++-------------------+
+| Account           |
+| Banker            |
+| Branch            |
+| Card              |
+| Customer          |
+| Loan              |
+| Loan_Payment      |
+| Transaction       |
++-------------------+
+8 rows in set (0.00 sec)
+
+mysql> alter table Customer add foreign key(Account_No) references Account(Account_No);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc Account;
++-----------------+---------------+------+-----+---------+-------+
+| Field           | Type          | Null | Key | Default | Extra |
++-----------------+---------------+------+-----+---------+-------+
+| Account_No      | int           | NO   | PRI | NULL    |       |
+| Account_Balance | decimal(10,2) | YES  |     | NULL    |       |
+| Account_Type    | varchar(20)   | YES  |     | NULL    |       |
++-----------------+---------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> desc Customer;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| Cust_ID    | int         | NO   | PRI | NULL    |       |
+| Cust_Name  | varchar(20) | YES  |     | NULL    |       |
+| DOB        | varchar(10) | YES  |     | NULL    |       |
+| Mobile_No  | int         | YES  |     | NULL    |       |
+| Account_No | int         | YES  | MUL | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+5 rows in set (0.01 sec)
+
+mysql> alter table Card add foreign key(Account_No) references Account(Account_No);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc Card;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| Card_No    | int         | NO   | PRI | NULL    |       |
+| Exp_Date   | varchar(10) | YES  |     | NULL    |       |
+| Card_Type  | varchar(20) | YES  |     | NULL    |       |
+| Account_No | int         | YES  | MUL | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+mysql> alter table Transaction add foreign key(Account_No) references Account(Account_No);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table Loan add foreign key(Account_No) references Account(Account_No);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc Loan;
++---------------+---------------+------+-----+---------+-------+
+| Field         | Type          | Null | Key | Default | Extra |
++---------------+---------------+------+-----+---------+-------+
+| Loan_ID       | int           | NO   | PRI | NULL    |       |
+| Issued_Amt    | decimal(10,2) | YES  |     | NULL    |       |
+| Interest_Rate | varchar(5)    | YES  |     | NULL    |       |
+| Account_No    | int           | YES  | MUL | NULL    |       |
++---------------+---------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> desc Transaction;
++------------------+---------------+------+-----+---------+-------+
+| Field            | Type          | Null | Key | Default | Extra |
++------------------+---------------+------+-----+---------+-------+
+| Transaction_ID   | int           | NO   | PRI | NULL    |       |
+| Transaction_Type | varchar(20)   | YES  |     | NULL    |       |
+| Account_No       | int           | YES  | MUL | NULL    |       |
+| Amount           | decimal(10,2) | YES  |     | NULL    |       |
++------------------+---------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> show tables;
++-------------------+
+| Tables_in_project |
++-------------------+
+| Account           |
+| Banker            |
+| Branch            |
+| Card              |
+| Customer          |
+| Loan              |
+| Loan_Payment      |
+| Transaction       |
++-------------------+
+8 rows in set (0.01 sec)
+
+mysql> desc Loan;
++---------------+---------------+------+-----+---------+-------+
+| Field         | Type          | Null | Key | Default | Extra |
++---------------+---------------+------+-----+---------+-------+
+| Loan_ID       | int           | NO   | PRI | NULL    |       |
+| Issued_Amt    | decimal(10,2) | YES  |     | NULL    |       |
+| Interest_Rate | varchar(5)    | YES  |     | NULL    |       |
+| Account_No    | int           | YES  | MUL | NULL    |       |
++---------------+---------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> desc Loan_Payment;
++-----------------+---------------+------+-----+---------+-------+
+| Field           | Type          | Null | Key | Default | Extra |
++-----------------+---------------+------+-----+---------+-------+
+| Loan_Payment_ID | int           | NO   | PRI | NULL    |       |
+| Issued_Amt      | decimal(10,2) | YES  |     | NULL    |       |
+| Loan_ID         | int           | YES  |     | NULL    |       |
++-----------------+---------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> alter table Loan_Payment add foreign key(Loan_ID) references Loan(Loan_ID);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc Loan;
++---------------+---------------+------+-----+---------+-------+
+| Field         | Type          | Null | Key | Default | Extra |
++---------------+---------------+------+-----+---------+-------+
+| Loan_ID       | int           | NO   | PRI | NULL    |       |
+| Issued_Amt    | decimal(10,2) | YES  |     | NULL    |       |
+| Interest_Rate | varchar(5)    | YES  |     | NULL    |       |
+| Account_No    | int           | YES  | MUL | NULL    |       |
++---------------+---------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> desc Loan_Payment;
++-----------------+---------------+------+-----+---------+-------+
+| Field           | Type          | Null | Key | Default | Extra |
++-----------------+---------------+------+-----+---------+-------+
+| Loan_Payment_ID | int           | NO   | PRI | NULL    |       |
+| Issued_Amt      | decimal(10,2) | YES  |     | NULL    |       |
+| Loan_ID         | int           | YES  | MUL | NULL    |       |
++-----------------+---------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> alter table Loan add unique(Issued_Amt);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table Loan_Payment add foreign key(Issued_Amt) references Loan(Issued_Amt);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc Loan_Payment;
++-----------------+---------------+------+-----+---------+-------+
+| Field           | Type          | Null | Key | Default | Extra |
++-----------------+---------------+------+-----+---------+-------+
+| Loan_Payment_ID | int           | NO   | PRI | NULL    |       |
+| Issued_Amt      | decimal(10,2) | YES  | MUL | NULL    |       |
+| Loan_ID         | int           | YES  | MUL | NULL    |       |
++-----------------+---------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> desc Loan;
++---------------+---------------+------+-----+---------+-------+
+| Field         | Type          | Null | Key | Default | Extra |
++---------------+---------------+------+-----+---------+-------+
+| Loan_ID       | int           | NO   | PRI | NULL    |       |
+| Issued_Amt    | decimal(10,2) | YES  | UNI | NULL    |       |
+| Interest_Rate | varchar(5)    | YES  |     | NULL    |       |
+| Account_No    | int           | YES  | MUL | NULL    |       |
++---------------+---------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> show tables;
++-------------------+
+| Tables_in_project |
++-------------------+
+| Account           |
+| Banker            |
+| Branch            |
+| Card              |
+| Customer          |
+| Loan              |
+| Loan_Payment      |
+| Transaction       |
++-------------------+
+8 rows in set (0.00 sec)
+
+mysql> desc account;
++-----------------+---------------+------+-----+---------+-------+
+| Field           | Type          | Null | Key | Default | Extra |
++-----------------+---------------+------+-----+---------+-------+
+| Account_No      | int           | NO   | PRI | NULL    |       |
+| Account_Balance | decimal(10,2) | YES  |     | NULL    |       |
+| Account_Type    | varchar(20)   | YES  |     | NULL    |       |
++-----------------+---------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> desc Banker;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| Banker_ID   | int         | NO   | PRI | NULL    |       |
+| Banker_Name | varchar(20) | YES  |     | NULL    |       |
+| Banker_Mail | varchar(50) | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> alter table Banker add unique(Banker_Mail);
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc Branch;
++----------------+-------------+------+-----+---------+-------+
+| Field          | Type        | Null | Key | Default | Extra |
++----------------+-------------+------+-----+---------+-------+
+| Branch_ID      | int         | NO   | PRI | NULL    |       |
+| IFS_Code       | varchar(11) | YES  |     | NULL    |       |
+| Banker_Address | varchar(50) | YES  |     | NULL    |       |
++----------------+-------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> desc Card;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| Card_No    | int         | NO   | PRI | NULL    |       |
+| Exp_Date   | varchar(10) | YES  |     | NULL    |       |
+| Card_Type  | varchar(20) | YES  |     | NULL    |       |
+| Account_No | int         | YES  | MUL | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+mysql> alter table Card add unique(Account_No);
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc Card;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| Card_No    | int         | NO   | PRI | NULL    |       |
+| Exp_Date   | varchar(10) | YES  |     | NULL    |       |
+| Card_Type  | varchar(20) | YES  |     | NULL    |       |
+| Account_No | int         | YES  | UNI | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+mysql> show tables;
++-------------------+
+| Tables_in_project |
++-------------------+
+| Account           |
+| Banker            |
+| Branch            |
+| Card              |
+| Customer          |
+| Loan              |
+| Loan_Payment      |
+| Transaction       |
++-------------------+
+8 rows in set (0.00 sec)
+
+mysql> desc Customer;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| Cust_ID    | int         | NO   | PRI | NULL    |       |
+| Cust_Name  | varchar(20) | YES  |     | NULL    |       |
+| DOB        | varchar(10) | YES  |     | NULL    |       |
+| Mobile_No  | int         | YES  |     | NULL    |       |
+| Account_No | int         | YES  | MUL | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+5 rows in set (0.01 sec)
+
+mysql> alter table Customer add unique(Mobile_No);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc Loan;
++---------------+---------------+------+-----+---------+-------+
+| Field         | Type          | Null | Key | Default | Extra |
++---------------+---------------+------+-----+---------+-------+
+| Loan_ID       | int           | NO   | PRI | NULL    |       |
+| Issued_Amt    | decimal(10,2) | YES  | UNI | NULL    |       |
+| Interest_Rate | varchar(5)    | YES  |     | NULL    |       |
+| Account_No    | int           | YES  | MUL | NULL    |       |
++---------------+---------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+mysql> desc Loan_Payment;
++-----------------+---------------+------+-----+---------+-------+
+| Field           | Type          | Null | Key | Default | Extra |
++-----------------+---------------+------+-----+---------+-------+
+| Loan_Payment_ID | int           | NO   | PRI | NULL    |       |
+| Issued_Amt      | decimal(10,2) | YES  | MUL | NULL    |       |
+| Loan_ID         | int           | YES  | MUL | NULL    |       |
++-----------------+---------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> desc Loan_Payment;
++-----------------+---------------+------+-----+---------+-------+
+| Field           | Type          | Null | Key | Default | Extra |
++-----------------+---------------+------+-----+---------+-------+
+| Loan_Payment_ID | int           | NO   | PRI | NULL    |       |
+| Issued_Amt      | decimal(10,2) | YES  | MUL | NULL    |       |
+| Loan_ID         | int           | YES  | MUL | NULL    |       |
++-----------------+---------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> drop table Loan_Payment;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> drop table Loan;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> show tables;
++-------------------+
+| Tables_in_project |
++-------------------+
+| Account           |
+| Banker            |
+| Branch            |
+| Card              |
+| Customer          |
+| Transaction       |
++-------------------+
+6 rows in set (0.01 sec)
+
+mysql> create table Loan_Payment(Loan_Payment_ID numeric(10) primary key,Issued_Amt decimal(10,2),Loan_ID numeric(10) unique);
+Query OK, 0 rows affected, 2 warnings (0.02 sec)
+
+mysql> desc Loan_Payment;
++-----------------+---------------+------+-----+---------+-------+
+| Field           | Type          | Null | Key | Default | Extra |
++-----------------+---------------+------+-----+---------+-------+
+| Loan_Payment_ID | int           | NO   | PRI | NULL    |       |
+| Issued_Amt      | decimal(10,2) | YES  |     | NULL    |       |
+| Loan_ID         | int           | YES  | UNI | NULL    |       |
++-----------------+---------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> create table Loan(Loan_ID numeric(10) primary key,Issued_Amt decimal(10,2),Interest_Rate varchar(10),Account_No numeric(10));
+Query OK, 0 rows affected, 2 warnings (0.02 sec)
+
+mysql> desc Loan;
++---------------+---------------+------+-----+---------+-------+
+| Field         | Type          | Null | Key | Default | Extra |
++---------------+---------------+------+-----+---------+-------+
+| Loan_ID       | int           | NO   | PRI | NULL    |       |
+| Issued_Amt    | decimal(10,2) | YES  |     | NULL    |       |
+| Interest_Rate | varchar(10)   | YES  |     | NULL    |       |
+| Account_No    | int           | YES  |     | NULL    |       |
++---------------+---------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+mysql> desc Loan_Payment;
++-----------------+---------------+------+-----+---------+-------+
+| Field           | Type          | Null | Key | Default | Extra |
++-----------------+---------------+------+-----+---------+-------+
+| Loan_Payment_ID | int           | NO   | PRI | NULL    |       |
+| Issued_Amt      | decimal(10,2) | YES  |     | NULL    |       |
+| Loan_ID         | int           | YES  | UNI | NULL    |       |
++-----------------+---------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> alter table Loan add foreign key(Account_No) references Account(Account_No);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table Loan add unique(Issued_Amt);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table Loan_Payment add foreign key(Issued_Amt) references Loan(Issued_Amt);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc Loan;
++---------------+---------------+------+-----+---------+-------+
+| Field         | Type          | Null | Key | Default | Extra |
++---------------+---------------+------+-----+---------+-------+
+| Loan_ID       | int           | NO   | PRI | NULL    |       |
+| Issued_Amt    | decimal(10,2) | YES  | UNI | NULL    |       |
+| Interest_Rate | varchar(10)   | YES  |     | NULL    |       |
+| Account_No    | int           | YES  | MUL | NULL    |       |
++---------------+---------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+mysql> desc Loan_Payment;
++-----------------+---------------+------+-----+---------+-------+
+| Field           | Type          | Null | Key | Default | Extra |
++-----------------+---------------+------+-----+---------+-------+
+| Loan_Payment_ID | int           | NO   | PRI | NULL    |       |
+| Issued_Amt      | decimal(10,2) | YES  | MUL | NULL    |       |
+| Loan_ID         | int           | YES  | UNI | NULL    |       |
++-----------------+---------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> show tables;
++-------------------+
+| Tables_in_project |
++-------------------+
+| Account           |
+| Banker            |
+| Branch            |
+| Card              |
+| Customer          |
+| Loan              |
+| Loan_Payment      |
+| Transaction       |
++-------------------+
+8 rows in set (0.01 sec)
+
+mysql> desc Transaction;
++------------------+---------------+------+-----+---------+-------+
+| Field            | Type          | Null | Key | Default | Extra |
++------------------+---------------+------+-----+---------+-------+
+| Transaction_ID   | int           | NO   | PRI | NULL    |       |
+| Transaction_Type | varchar(20)   | YES  |     | NULL    |       |
+| Account_No       | int           | YES  | MUL | NULL    |       |
+| Amount           | decimal(10,2) | YES  |     | NULL    |       |
++------------------+---------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+mysql> create table FD(FD_Interest_Rate varchar(10),Account_No numeric(10),Time_Period varchar(20));
+Query OK, 0 rows affected, 1 warning (0.02 sec)
+
+mysql> alter table FD add foreign key(Account_No) references Account(Account_No);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
